@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CJL Season Rankings — Collegiate Jiu-Jitsu League</title>
+<meta name="description" content="Historical team standings for every Collegiate Jiu-Jitsu League season." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --surface: #131315;
+    --surface-2: #1a1a1d;
+    --line: #26262a;
+    --text: #f4f3ef;
+    --muted: #9a9aa1;
+    --gold: #e2b94f;
+    --gold-deep: #b8912f;
+    --display: "Archivo Black", "Arial Black", sans-serif;
+    --body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { color-scheme: dark; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- Header ---------- */
+  header {
+    border-bottom: 1px solid var(--line);
+    background: rgba(11, 11, 12, 0.92);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand img { height: 30px; display: block; }
+  .brand-name {
+    font-family: var(--display);
+    font-size: 15px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .header-links { display: flex; gap: 20px; font-size: 13px; }
+  .header-links a {
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: color 120ms ease;
+  }
+  .header-links a:hover, .header-links a:focus-visible { color: var(--gold); }
+
+  /* ---------- Page title ---------- */
+  .page-head { padding: 56px 0 8px; }
+  .eyebrow {
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(34px, 6vw, 58px);
+    line-height: 1.02;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+  .page-sub { color: var(--muted); margin-top: 14px; max-width: 520px; }
+
+  /* ---------- Controls ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 34px 0 22px;
+  }
+  .control-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .season-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 9px 16px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+  }
+  .chip:hover { border-color: var(--gold-deep); }
+  .chip[aria-pressed="true"] {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #14110a;
+  }
+  .chip:focus-visible, .tab:focus-visible, th button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .tabs { display: flex; gap: 8px; }
+  .tab {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 9px 18px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+  }
+  .tab:hover { color: var(--text); border-color: var(--gold-deep); }
+  .tab[aria-selected="true"] {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #14110a;
+  }
+
+  /* ---------- Champion strip (signature) ---------- */
+  .champion {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 1px solid var(--gold-deep);
+    background: linear-gradient(100deg, rgba(226, 185, 79, 0.14), rgba(226, 185, 79, 0.03) 60%);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 26px;
+  }
+  .champion .medal {
+    font-family: var(--display);
+    font-size: 26px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .champion .champ-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 3px;
+  }
+  .champion .champ-name {
+    font-family: var(--display);
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .champion .champ-points {
+    margin-left: auto;
+    text-align: right;
+    color: var(--muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .champion .champ-points strong { color: var(--text); font-size: 18px; display: block; }
+
+  /* ---------- Table ---------- */
+  .table-card {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 64px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--surface-2); }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  th button {
+    all: unset;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  th button:hover { color: var(--gold); }
+  th .arrow { font-size: 10px; color: var(--gold); }
+  th.num, td.num { text-align: right; }
+
+  tbody tr { background: var(--surface); transition: background 120ms ease; }
+  tbody tr:nth-child(even) { background: #101012; }
+  tbody tr:hover { background: var(--surface-2); }
+  td {
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+
+  td.rank {
+    font-family: var(--display);
+    font-size: 15px;
+    color: var(--muted);
+    width: 56px;
+  }
+  tr.top td.rank { color: var(--gold); }
+
+  .school-cell { display: flex; align-items: center; gap: 14px; font-weight: 600; }
+  .school-logo {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    object-fit: contain;
+    background: #fff;
+    padding: 3px;
+    flex-shrink: 0;
+  }
+  .monogram {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  td.num {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    color: var(--gold);
+    width: 110px;
+  }
+  td.num.medals { color: var(--text); }
+
+  /* ---------- Empty & error states ---------- */
+  .empty {
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--muted);
+    background: var(--surface);
+  }
+  .empty strong { color: var(--text); display: block; margin-bottom: 6px; font-size: 16px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 0 40px;
+    color: var(--muted);
+    font-size: 12.5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    justify-content: space-between;
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--gold); }
+  .footer-links { display: flex; gap: 14px; align-items: center; }
+  .admin-link {
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 12px;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+  .admin-link:hover, .admin-link:focus-visible { border-color: var(--gold-deep); color: var(--gold); }
+
+  @media (max-width: 560px) {
+    .header-links { display: none; }
+    th, td { padding-left: 12px; padding-right: 12px; }
+    td.rank { width: 40px; }
+    .champion { flex-wrap: wrap; }
+    .champion .champ-points { margin-left: 0; text-align: left; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap header-inner">
+    <a class="brand" href="https://cjlofficial.org">
+      <img src="https://cjlofficial.org/assets/cjl-logo-white-C1pBkP6R.png" alt="CJL logo"
+           onerror="this.remove()" />
+      <span class="brand-name">Season Rankings</span>
+    </a>
+    <nav class="header-links" aria-label="CJL sites">
+      <a href="https://cjlofficial.org">Main Site</a>
+      <a href="https://live.cjlofficial.org">Live Status</a>
+      <a href="https://cjlofficial.org/events">Events</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head">
+    <p class="eyebrow">Collegiate Jiu-Jitsu League</p>
+    <h1>Season Rankings</h1>
+    <p class="page-sub">Final team standings from every CJL season. Points reflect tournament results across the season; medal points count individual podium finishes.</p>
+  </div>
+
+  <div class="controls">
+    <div>
+      <span class="control-label" id="season-label">Season</span>
+      <div class="season-chips" role="group" aria-labelledby="season-label" id="seasonChips"></div>
+    </div>
+    <div>
+      <span class="control-label" id="division-label">Division</span>
+      <div class="tabs" role="tablist" aria-labelledby="division-label" id="divisionTabs">
+        <button class="tab" role="tab" data-division="combined" aria-selected="true">Combined</button>
+        <button class="tab" role="tab" data-division="men" aria-selected="false">Men</button>
+        <button class="tab" role="tab" data-division="women" aria-selected="false">Women</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content"></div>
+</main>
+
+<footer class="wrap">
+  <span>© <span id="year"></span> Collegiate Jiu-Jitsu League · 501(c)(3) nonprofit</span>
+  <span class="footer-links">
+    <a href="https://cjlofficial.org/donate">Donate</a>
+    <a href="admin.html" class="admin-link">Admin</a>
+  </span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var DATA_URL = "rankings.json";
+  var state = { data: null, seasonId: null, division: "combined", sortKey: "points", sortDir: "desc" };
+
+  var content = document.getElementById("content");
+  var seasonChips = document.getElementById("seasonChips");
+  var divisionTabs = document.getElementById("divisionTabs");
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  var DIVISION_NAMES = { combined: "Combined", men: "Men's", women: "Women's" };
+
+  function initials(name) {
+    var stop = { "of": 1, "the": 1, "at": 1 };
+    var words = name.split(/\s+/).filter(function (w) { return !stop[w.toLowerCase()]; });
+    return words.slice(0, 2).map(function (w) { return w.charAt(0).toUpperCase(); }).join("");
+  }
+
+  function esc(s) {
+    var d = document.createElement("div");
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function currentSeason() {
+    if (!state.data) return null;
+    for (var i = 0; i < state.data.seasons.length; i++) {
+      if (state.data.seasons[i].id === state.seasonId) return state.data.seasons[i];
+    }
+    return null;
+  }
+
+  function sortedRows(rows) {
+    // Official rank: points desc, medal points as tiebreaker.
+    var ranked = rows.slice().sort(function (a, b) {
+      return (b.points - a.points) || (b.medalPts - a.medalPts) || a.school.localeCompare(b.school);
+    });
+    ranked.forEach(function (r, i) { r._rank = i + 1; });
+
+    var key = state.sortKey, dir = state.sortDir === "asc" ? 1 : -1;
+    return ranked.sort(function (a, b) {
+      var va = key === "medalPts" ? a.medalPts : a.points;
+      var vb = key === "medalPts" ? b.medalPts : b.points;
+      return (va - vb) * dir || (a._rank - b._rank);
+    });
+  }
+
+  function renderSeasonChips() {
+    seasonChips.innerHTML = "";
+    // Newest season first in the chip row.
+    state.data.seasons.slice().reverse().forEach(function (s) {
+      var b = document.createElement("button");
+      b.className = "chip";
+      b.type = "button";
+      b.textContent = s.label;
+      b.setAttribute("aria-pressed", String(s.id === state.seasonId));
+      b.addEventListener("click", function () {
+        state.seasonId = s.id;
+        renderSeasonChips();
+        renderContent();
+      });
+      seasonChips.appendChild(b);
+    });
+  }
+
+  function arrow(key) {
+    if (state.sortKey !== key) return "";
+    return '<span class="arrow" aria-hidden="true">' + (state.sortDir === "desc" ? "▼" : "▲") + "</span>";
+  }
+
+  function renderContent() {
+    var season = currentSeason();
+    if (!season) { content.innerHTML = ""; return; }
+
+    var rows = (season.divisions && season.divisions[state.division]) || [];
+    var html = "";
+
+    if (!rows.length) {
+      html += '<div class="table-card"><div class="empty">' +
+        "<strong>No " + DIVISION_NAMES[state.division] + " standings for " + esc(season.label) + " yet</strong>" +
+        "Standings will appear here once results are posted for this division." +
+        "</div></div>";
+      content.innerHTML = html;
+      return;
+    }
+
+    var ranked = sortedRows(rows);
+    var champ = null;
+    for (var i = 0; i < ranked.length; i++) if (ranked[i]._rank === 1) champ = ranked[i];
+
+    if (champ) {
+      html += '<div class="champion">' +
+        '<span class="medal" aria-hidden="true">1</span>' +
+        "<div>" +
+        '<div class="champ-label">' + esc(season.label) + " " + DIVISION_NAMES[state.division] + " Champions</div>" +
+        '<div class="champ-name">' + esc(champ.school) + "</div>" +
+        "</div>" +
+        '<div class="champ-points"><strong>' + champ.points + " pts</strong>" + champ.medalPts + " medal pts</div>" +
+        "</div>";
+    }
+
+    html += '<div class="table-card"><table>' +
+      "<thead><tr>" +
+      "<th scope=\"col\">Rank</th>" +
+      "<th scope=\"col\">School</th>" +
+      '<th scope="col" class="num"><button type="button" data-sort="points">Points ' + arrow("points") + "</button></th>" +
+      '<th scope="col" class="num"><button type="button" data-sort="medalPts">Medal Pts ' + arrow("medalPts") + "</button></th>" +
+      "</tr></thead><tbody>";
+
+    ranked.forEach(function (r) {
+      var logo = r.logo
+        ? '<img class="school-logo" src="' + esc(r.logo) + '" alt="" loading="lazy" onerror="this.remove()" />'
+        : '<span class="monogram" aria-hidden="true">' + esc(initials(r.school)) + "</span>";
+      html += "<tr" + (r._rank === 1 ? ' class="top"' : "") + ">" +
+        '<td class="rank">' + r._rank + "</td>" +
+        '<td><span class="school-cell">' + logo + esc(r.school) + "</span></td>" +
+        '<td class="num">' + r.points + "</td>" +
+        '<td class="num medals">' + r.medalPts + "</td>" +
+        "</tr>";
+    });
+
+    html += "</tbody></table></div>";
+    content.innerHTML = html;
+
+    content.querySelectorAll("[data-sort]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var key = btn.getAttribute("data-sort");
+        if (state.sortKey === key) {
+          state.sortDir = state.sortDir === "desc" ? "asc" : "desc";
+        } else {
+          state.sortKey = key;
+          state.sortDir = "desc";
+        }
+        renderContent();
+      });
+    });
+  }
+
+  divisionTabs.querySelectorAll(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      state.division = tab.getAttribute("data-division");
+      divisionTabs.querySelectorAll(".tab").forEach(function (t) {
+        t.setAttribute("aria-selected", String(t === tab));
+      });
+      renderContent();
+    });
+  });
+
+  fetch(DATA_URL)
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      if (!data || !Array.isArray(data.seasons) || !data.seasons.length) throw new Error("No seasons in data");
+      state.data = data;
+      state.seasonId = data.seasons[data.seasons.length - 1].id; // newest season = last entry
+      renderSeasonChips();
+      renderContent();
+    })
+    .catch(function (err) {
+      content.innerHTML = '<div class="table-card"><div class="empty">' +
+        "<strong>Couldn't load rankings data</strong>" +
+        "Make sure rankings.json is in the same folder as this page and is valid JSON. (" + esc(err.message) + ")" +
+        "</div></div>";
+    });
+})();
+</script>
+</body>
+</html>
