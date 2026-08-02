@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CJL Rankings Admin</title>
+<meta name="robots" content="noindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --surface: #131315;
+    --surface-2: #1a1a1d;
+    --line: #26262a;
+    --text: #f4f3ef;
+    --muted: #9a9aa1;
+    --gold: #e2b94f;
+    --gold-deep: #b8912f;
+    --red: #e0604f;
+    --green: #6fbf73;
+    --display: "Archivo Black", "Arial Black", sans-serif;
+    --body: "Inter", -apple-system, "Segoe UI", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { color-scheme: dark; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px 80px; }
+
+  header { border-bottom: 1px solid var(--line); margin-bottom: 40px; }
+  .header-inner { max-width: 860px; margin: 0 auto; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--display); font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .brand span { color: var(--gold); }
+  .header-inner a { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; }
+  .header-inner a:hover { color: var(--gold); }
+
+  h1 { font-family: var(--display); font-size: clamp(28px, 5vw, 42px); text-transform: uppercase; line-height: 1.05; margin-bottom: 10px; }
+  .sub { color: var(--muted); max-width: 620px; margin-bottom: 34px; }
+
+  .card { border: 1px solid var(--line); border-radius: 6px; background: var(--surface); padding: 22px; margin-bottom: 22px; }
+  .card h2 { font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+
+  label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  input[type="text"], input[type="number"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font: inherit; padding: 10px 12px;
+  }
+  input:focus-visible, button:focus-visible, a.btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .field { margin-bottom: 16px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  .hint a { color: var(--gold); }
+
+  .btn {
+    display: inline-block; text-decoration: none; text-align: center;
+    font: inherit; font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--gold); color: #14110a; border: 1px solid var(--gold); border-radius: 4px;
+    padding: 11px 22px; cursor: pointer; transition: filter 120ms ease;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+  .btn.ghost:hover { border-color: var(--gold-deep); }
+  .btn.small { padding: 7px 14px; font-size: 12px; }
+  .btn.danger { background: transparent; color: var(--red); border-color: var(--line); }
+  .btn.danger:hover { border-color: var(--red); }
+
+  .status { border-radius: 4px; padding: 12px 14px; font-size: 13.5px; margin-top: 16px; display: none; }
+  .status.show { display: block; }
+  .status.ok { background: rgba(111, 191, 115, 0.12); border: 1px solid rgba(111, 191, 115, 0.5); color: var(--green); }
+  .status.err { background: rgba(224, 96, 79, 0.1); border: 1px solid rgba(224, 96, 79, 0.5); color: var(--red); }
+  .status a { color: inherit; }
+
+  .row-flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .row-flex .field { flex: 1 1 180px; margin-bottom: 0; }
+
+  #editor { display: none; }
+  .season-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .chip {
+    font: inherit; font-size: 13px; font-weight: 600; color: var(--text);
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+    padding: 8px 14px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: #14110a; }
+
+  .tabs { display: flex; gap: 8px; margin: 18px 0 14px; }
+  .tab {
+    font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 4px;
+    padding: 8px 16px; cursor: pointer;
+  }
+  .tab[aria-selected="true"] { background: var(--gold); border-color: var(--gold); color: #14110a; }
+  .tab .count { opacity: 0.7; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  td { padding: 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  td input { padding: 8px 10px; }
+  td.n { width: 110px; }
+  td.x { width: 44px; text-align: center; }
+  .del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; line-height: 1; padding: 6px; }
+  .del:hover { color: var(--red); }
+  .empty-div { color: var(--muted); font-size: 13.5px; padding: 14px 4px; }
+
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  .steps { counter-reset: step; list-style: none; margin: 4px 0 18px; }
+  .steps li { counter-increment: step; display: flex; gap: 12px; padding: 8px 0; color: var(--muted); font-size: 14px; }
+  .steps li::before {
+    content: counter(step);
+    font-family: var(--display);
+    color: var(--gold);
+    font-size: 14px;
+    min-width: 20px;
+  }
+  .steps li strong { color: var(--text); }
+  .publish-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  footer { color: var(--muted); font-size: 12.5px; margin-top: 40px; }
+
+  /* password gate */
+  #gate {
+    position: fixed; inset: 0; z-index: 50;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .gate-card {
+    width: 100%; max-width: 400px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--surface); padding: 28px;
+  }
+  .gate-card .brand { margin-bottom: 18px; }
+  .gate-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+  input[type="password"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 4px;
+    color: var(--text); font: inherit; padding: 10px 12px;
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="brand">CJL <span>Rankings Admin</span></div>
+    <label for="gatePw">Staff password</label>
+    <input type="password" id="gatePw" autocomplete="off" />
+    <p class="gate-err" id="gateErr">That's not it — check with a CJL admin.</p>
+    <button class="btn" id="gateBtn" type="button" style="margin-top:14px">Enter</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">CJL <span>Rankings Admin</span></div>
+    <a href="index.html">View public page</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Update Season Rankings</h1>
+  <p class="sub">Edit the standings below, then publish through GitHub — you just need to be signed in to a GitHub account that has access to the CJL rankings repository. No tokens or keys needed.</p>
+
+  <div class="card" id="loadCard">
+    <h2>Start</h2>
+    <p class="hint" style="margin-bottom:14px">This loads the rankings currently on the live site.</p>
+    <button class="btn" id="loadBtn" type="button">Load current rankings</button>
+    <div class="status" id="loadStatus"></div>
+  </div>
+
+  <div id="editor">
+    <div class="card">
+      <h2>Season</h2>
+      <div class="season-chips" id="seasonChips"></div>
+      <div class="row-flex">
+        <div class="field">
+          <label for="newSeasonLabel">New season name</label>
+          <input type="text" id="newSeasonLabel" placeholder="e.g. Fall 2026" />
+        </div>
+        <button class="btn ghost" id="addSeasonBtn" type="button">Add season</button>
+        <button class="btn danger" id="deleteSeasonBtn" type="button">Delete this season</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Standings — <span id="seasonTitle"></span></h2>
+      <div class="tabs" role="tablist" id="divTabs">
+        <button class="tab" role="tab" data-div="combined" aria-selected="true">Combined <span class="count"></span></button>
+        <button class="tab" role="tab" data-div="men" aria-selected="false">Men <span class="count"></span></button>
+        <button class="tab" role="tab" data-div="women" aria-selected="false">Women <span class="count"></span></button>
+      </div>
+      <div id="tableHolder"></div>
+      <div class="toolbar">
+        <button class="btn ghost small" id="addRowBtn" type="button">+ Add school</button>
+      </div>
+      <p class="hint" style="margin-top:12px">Row order here doesn't matter — the public page ranks teams by points automatically (medal points break ties). Logo URL is optional; without one, the public page shows a monogram badge.</p>
+    </div>
+
+    <div class="card">
+      <h2>Publish</h2>
+      <ol class="steps">
+        <li><strong>Copy your updated rankings file</strong>&nbsp;— button below.</li>
+        <li><strong>Open the GitHub editor</strong>&nbsp;— it opens rankings.json ready to edit (sign in to GitHub if asked).</li>
+        <li><strong>Select everything in the editor</strong> (Ctrl+A / Cmd+A), <strong>paste</strong>, then click <strong>Commit changes</strong>.</li>
+      </ol>
+      <div class="publish-actions">
+        <button class="btn" id="copyBtn" type="button">Copy updated file</button>
+        <a class="btn ghost" id="ghEditLink" href="#" target="_blank" rel="noopener">Open GitHub editor</a>
+        <button class="btn ghost" id="downloadBtn" type="button">Download instead</button>
+      </div>
+      <p class="hint" style="margin-top:12px">The public page updates about a minute after you commit. Every publish is a GitHub commit, so anything can be reviewed or undone from the repo's history.</p>
+      <div class="status" id="pubStatus"></div>
+    </div>
+  </div>
+
+  <footer>CJL Rankings Admin · publishes to <code id="repoNote"></code></footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ====== Repo settings ====== */
+  var OWNER = "College-Jiu-Jitsu-League";
+  var REPO = "cjl-rankings";
+  var BRANCH = "main";
+  /* =========================== */
+
+  var FILE = "rankings.json";
+  var EDIT_URL = "https://github.com/" + OWNER + "/" + REPO + "/edit/" + BRANCH + "/" + FILE;
+
+  var state = { data: null, seasonIdx: 0, division: "combined", dirty: false };
+
+  var $ = function (id) { return document.getElementById(id); };
+  $("repoNote").textContent = OWNER + "/" + REPO + " · " + FILE;
+  $("ghEditLink").href = EDIT_URL;
+
+  /* ---------- Password gate ----------
+     Deterrent only: keeps casual visitors out of the editor UI.
+     Real protection is GitHub write access - nothing here can change
+     the live site. To change the password, hash the new one with
+     SHA-256 (e.g. ask Claude, or search "sha256 online") and replace
+     PW_HASH below. */
+  var PW_HASH = "75fb21ecf2ed442cb752464477c01b7c39b2ccd2f00e99fada973b3b494981ea";
+
+  function sha256Hex(str) {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(str)).then(function (buf) {
+      return Array.from(new Uint8Array(buf)).map(function (b) {
+        return b.toString(16).padStart(2, "0");
+      }).join("");
+    });
+  }
+
+  function openGate() {
+    $("gate").remove();
+    try { sessionStorage.setItem("cjl_admin_ok", "1"); } catch (e) {}
+  }
+
+  function tryGate() {
+    var pw = $("gatePw").value;
+    if (!pw) return;
+    if (!window.crypto || !crypto.subtle) {
+      // crypto.subtle needs HTTPS; on the live site this always exists.
+      $("gateErr").textContent = "This page must be opened over https for the password check to work.";
+      $("gateErr").style.display = "block";
+      return;
+    }
+    sha256Hex(pw).then(function (hex) {
+      if (hex === PW_HASH) { openGate(); }
+      else {
+        $("gateErr").textContent = "That's not it — check with a CJL admin.";
+        $("gateErr").style.display = "block";
+        $("gatePw").select();
+      }
+    });
+  }
+
+  try {
+    if (sessionStorage.getItem("cjl_admin_ok") === "1") { $("gate").remove(); }
+  } catch (e) {}
+  if ($("gate")) {
+    $("gateBtn").addEventListener("click", tryGate);
+    $("gatePw").addEventListener("keydown", function (e) { if (e.key === "Enter") tryGate(); });
+    $("gatePw").focus();
+  }
+
+  function setStatus(el, kind, html) { el.className = "status show " + kind; el.innerHTML = html; }
+  function clearStatus(el) { el.className = "status"; el.innerHTML = ""; }
+
+  function markDirty() { state.dirty = true; }
+  window.addEventListener("beforeunload", function (e) {
+    if (state.dirty) { e.preventDefault(); e.returnValue = ""; }
+  });
+
+  function slugify(label) {
+    return label.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+  function escAttr(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+
+  /* ---------- Load ---------- */
+  $("loadBtn").addEventListener("click", function () {
+    clearStatus($("loadStatus"));
+    $("loadBtn").disabled = true;
+    // Cache-busting query so we always get the latest deployed version.
+    fetch(FILE + "?t=" + Date.now())
+      .then(function (res) {
+        if (!res.ok) throw new Error("Couldn't load " + FILE + " (HTTP " + res.status + "). Make sure this page is on the live site, in the same folder as " + FILE + ".");
+        return res.json();
+      })
+      .then(function (data) {
+        if (!Array.isArray(data.seasons)) throw new Error(FILE + " has an unexpected format.");
+        state.data = data;
+        state.seasonIdx = data.seasons.length - 1;
+        state.dirty = false;
+        $("loadCard").style.display = "none";
+        $("editor").style.display = "block";
+        renderAll();
+      })
+      .catch(function (err) { setStatus($("loadStatus"), "err", err.message); })
+      .finally(function () { $("loadBtn").disabled = false; });
+  });
+
+  /* ---------- Render ---------- */
+  function season() { return state.data.seasons[state.seasonIdx]; }
+  function rows() {
+    var s = season();
+    if (!s.divisions) s.divisions = {};
+    if (!Array.isArray(s.divisions[state.division])) s.divisions[state.division] = [];
+    return s.divisions[state.division];
+  }
+
+  function renderAll() { renderSeasons(); renderTabs(); renderTable(); }
+
+  function renderSeasons() {
+    var holder = $("seasonChips");
+    holder.innerHTML = "";
+    state.data.seasons.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = s.label;
+      b.setAttribute("aria-pressed", String(i === state.seasonIdx));
+      b.addEventListener("click", function () { state.seasonIdx = i; renderAll(); });
+      holder.appendChild(b);
+    });
+    $("seasonTitle").textContent = season() ? season().label : "";
+  }
+
+  function renderTabs() {
+    document.querySelectorAll("#divTabs .tab").forEach(function (t) {
+      var d = t.getAttribute("data-div");
+      t.setAttribute("aria-selected", String(d === state.division));
+      var arr = (season().divisions && season().divisions[d]) || [];
+      t.querySelector(".count").textContent = "(" + arr.length + ")";
+    });
+  }
+
+  function renderTable() {
+    var list = rows();
+    var holder = $("tableHolder");
+    if (!list.length) {
+      holder.innerHTML = '<p class="empty-div">No schools in this division yet. Add the first one below.</p>';
+      return;
+    }
+    var html = "<table><thead><tr><th>School</th><th>Points</th><th>Medal pts</th><th>Logo URL (optional)</th><th></th></tr></thead><tbody>";
+    list.forEach(function (r, i) {
+      html += "<tr>" +
+        '<td><input type="text" data-i="' + i + '" data-k="school" value="' + escAttr(r.school || "") + '" placeholder="School name" /></td>' +
+        '<td class="n"><input type="number" min="0" data-i="' + i + '" data-k="points" value="' + Number(r.points || 0) + '" /></td>' +
+        '<td class="n"><input type="number" min="0" data-i="' + i + '" data-k="medalPts" value="' + Number(r.medalPts || 0) + '" /></td>' +
+        '<td><input type="text" data-i="' + i + '" data-k="logo" value="' + escAttr(r.logo || "") + '" placeholder="https://..." /></td>' +
+        '<td class="x"><button type="button" class="del" data-del="' + i + '" aria-label="Remove ' + escAttr(r.school || "row") + '">✕</button></td>' +
+        "</tr>";
+    });
+    html += "</tbody></table>";
+    holder.innerHTML = html;
+
+    holder.querySelectorAll("input").forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        var i = Number(inp.getAttribute("data-i"));
+        var k = inp.getAttribute("data-k");
+        var v = inp.value;
+        if (k === "points" || k === "medalPts") {
+          rows()[i][k] = Math.max(0, Number(v) || 0);
+        } else if (k === "logo") {
+          if (v.trim()) rows()[i].logo = v; else delete rows()[i].logo;
+        } else {
+          rows()[i][k] = v;
+        }
+        markDirty();
+      });
+    });
+    holder.querySelectorAll("[data-del]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        rows().splice(Number(btn.getAttribute("data-del")), 1);
+        markDirty();
+        renderTabs(); renderTable();
+      });
+    });
+  }
+
+  /* ---------- Editing actions ---------- */
+  document.querySelectorAll("#divTabs .tab").forEach(function (t) {
+    t.addEventListener("click", function () {
+      state.division = t.getAttribute("data-div");
+      renderTabs(); renderTable();
+    });
+  });
+
+  $("addRowBtn").addEventListener("click", function () {
+    rows().push({ school: "", points: 0, medalPts: 0 });
+    markDirty();
+    renderTabs(); renderTable();
+    var inputs = $("tableHolder").querySelectorAll('input[data-k="school"]');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+
+  $("addSeasonBtn").addEventListener("click", function () {
+    var label = $("newSeasonLabel").value.trim();
+    if (!label) { alert("Type a season name first, e.g. Fall 2026."); return; }
+    var id = slugify(label);
+    if (state.data.seasons.some(function (s) { return s.id === id; })) {
+      alert("A season with that name already exists."); return;
+    }
+    state.data.seasons.push({ id: id, label: label, divisions: { combined: [], men: [], women: [] } });
+    state.seasonIdx = state.data.seasons.length - 1;
+    state.division = "combined";
+    $("newSeasonLabel").value = "";
+    markDirty();
+    renderAll();
+  });
+
+  $("deleteSeasonBtn").addEventListener("click", function () {
+    if (state.data.seasons.length <= 1) { alert("You can't delete the only season."); return; }
+    var s = season();
+    if (!confirm('Delete "' + s.label + '" and all its standings? This takes effect when you publish.')) return;
+    state.data.seasons.splice(state.seasonIdx, 1);
+    state.seasonIdx = state.data.seasons.length - 1;
+    markDirty();
+    renderAll();
+  });
+
+  /* ---------- Publish ---------- */
+  function validate() {
+    var problems = [];
+    state.data.seasons.forEach(function (s) {
+      ["combined", "men", "women"].forEach(function (d) {
+        var arr = (s.divisions && s.divisions[d]) || [];
+        arr.forEach(function (r, i) {
+          if (!String(r.school || "").trim()) problems.push(s.label + " / " + d + ": row " + (i + 1) + " has no school name");
+        });
+      });
+    });
+    return problems;
+  }
+
+  function finalJson() {
+    return JSON.stringify(state.data, null, 2) + "\n";
+  }
+
+  function guardValid() {
+    clearStatus($("pubStatus"));
+    var problems = validate();
+    if (problems.length) {
+      setStatus($("pubStatus"), "err", "Fix these first:<br>• " + problems.join("<br>• "));
+      return false;
+    }
+    return true;
+  }
+
+  $("copyBtn").addEventListener("click", function () {
+    if (!guardValid()) return;
+    var text = finalJson();
+    var done = function () {
+      state.dirty = false;
+      setStatus($("pubStatus"), "ok", "Copied. Now open the GitHub editor, select everything (Ctrl+A / Cmd+A), paste, and commit.");
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  });
+
+  function fallbackCopy(text, done) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); done(); }
+    catch (e) { setStatus($("pubStatus"), "err", "Copy failed — use the Download button instead."); }
+    document.body.removeChild(ta);
+  }
+
+  $("downloadBtn").addEventListener("click", function () {
+    if (!guardValid()) return;
+    var blob = new Blob([finalJson()], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = FILE;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+    state.dirty = false;
+    setStatus($("pubStatus"), "ok", 'Downloaded. On GitHub, use "Add file → Upload files" in the repo to replace ' + FILE + ", or paste its contents in the editor.");
+  });
+})();
+</script>
+</body>
+</html>
