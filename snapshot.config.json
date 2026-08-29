@@ -1,17 +1,5 @@
 {
-  "_comment": "Settings for the automatic season snapshot. Only supabaseUrl and supabaseAnonKey need filling in - get them from the site's DevTools Network tab (any request to *.supabase.co: the URL, and the 'apikey' header). The anon key is safe to keep in a public repo; it is already shipped to every visitor's browser. NEVER put a service_role key here.",
+  "_comment": "Settings for the automatic season snapshot. The script reads standings from the website's own public API endpoint - no database keys needed anywhere. If the endpoint path ever changes, update it here.",
 
-  "supabaseUrl": "https://REPLACE-ME.supabase.co",
-  "supabaseAnonKey": "REPLACE-ME",
-
-  "_schema_comment": "Matches the website's database: men's and women's standings live in separate tables with identical columns. Combined is computed by summing points and medal points per school across both tables, the same way the website itself does.",
-  "tables": {
-    "men": "standings_mens",
-    "women": "standings_womens"
-  },
-  "columns": {
-    "school": "school_name",
-    "points": "points",
-    "medalPts": "medal_pts"
-  }
+  "standingsEndpoint": "https://cjlofficial.org/api/public/standings"
 }
