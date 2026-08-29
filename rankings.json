@@ -5,21 +5,261 @@
       "label": "Spring 2026",
       "divisions": {
         "combined": [
-          { "school": "Columbia University", "points": 45, "medalPts": 6 },
-          { "school": "Boston University", "points": 34, "medalPts": 4 },
-          { "school": "Harvard Combat Club", "points": 31, "medalPts": 2 },
-          { "school": "UMass Amherst", "points": 30, "medalPts": 3 },
-          { "school": "Brown GAMMA", "points": 26, "medalPts": 4 },
-          { "school": "Yale University", "points": 18, "medalPts": 1 },
-          { "school": "UMass Boston", "points": 17, "medalPts": 0 },
-          { "school": "UMass Lowell", "points": 8, "medalPts": 2 },
-          { "school": "Northeastern University", "points": 2, "medalPts": 1 },
-          { "school": "UMass Dartmouth", "points": 2, "medalPts": 0 },
-          { "school": "University of Pennsylvania", "points": 2, "medalPts": 0 },
-          { "school": "Brandeis University", "points": 1, "medalPts": 0 }
+          {
+            "school": "Columbia University",
+            "points": 45,
+            "medalPts": 6
+          },
+          {
+            "school": "Boston University",
+            "points": 34,
+            "medalPts": 4
+          },
+          {
+            "school": "Harvard Combat Club",
+            "points": 31,
+            "medalPts": 2
+          },
+          {
+            "school": "UMass Amherst",
+            "points": 30,
+            "medalPts": 3
+          },
+          {
+            "school": "Brown GAMMA",
+            "points": 26,
+            "medalPts": 4
+          },
+          {
+            "school": "Yale University",
+            "points": 18,
+            "medalPts": 1
+          },
+          {
+            "school": "UMass Boston",
+            "points": 17,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Lowell",
+            "points": 8,
+            "medalPts": 2
+          },
+          {
+            "school": "Northeastern University",
+            "points": 2,
+            "medalPts": 1
+          },
+          {
+            "school": "UMass Dartmouth",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "University of Pennsylvania",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "Brandeis University",
+            "points": 1,
+            "medalPts": 0
+          }
         ],
         "men": [],
         "women": []
+      }
+    },
+    {
+      "id": "test-season",
+      "label": "Test Season",
+      "divisions": {
+        "combined": [
+          {
+            "school": "Columbia University",
+            "points": 45,
+            "medalPts": 6
+          },
+          {
+            "school": "Boston University",
+            "points": 34,
+            "medalPts": 4
+          },
+          {
+            "school": "Harvard Combat Club",
+            "points": 31,
+            "medalPts": 2
+          },
+          {
+            "school": "UMass Amherst",
+            "points": 30,
+            "medalPts": 3
+          },
+          {
+            "school": "Brown GAMMA",
+            "points": 26,
+            "medalPts": 4
+          },
+          {
+            "school": "Yale University",
+            "points": 18,
+            "medalPts": 1
+          },
+          {
+            "school": "UMass Boston",
+            "points": 17,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Lowell",
+            "points": 8,
+            "medalPts": 2
+          },
+          {
+            "school": "Northeastern University",
+            "points": 2,
+            "medalPts": 1
+          },
+          {
+            "school": "UMass Dartmouth",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "University of Pennsylvania",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "Brandeis University",
+            "points": 1,
+            "medalPts": 0
+          }
+        ],
+        "men": [
+          {
+            "school": "Columbia University",
+            "points": 33,
+            "medalPts": 3
+          },
+          {
+            "school": "Harvard Combat Club",
+            "points": 31,
+            "medalPts": 2
+          },
+          {
+            "school": "UMass Amherst",
+            "points": 30,
+            "medalPts": 3
+          },
+          {
+            "school": "Boston University",
+            "points": 20,
+            "medalPts": 1
+          },
+          {
+            "school": "Brown GAMMA",
+            "points": 18,
+            "medalPts": 2
+          },
+          {
+            "school": "Yale University",
+            "points": 18,
+            "medalPts": 1
+          },
+          {
+            "school": "UMass Boston",
+            "points": 17,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Dartmouth",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "University of Pennsylvania",
+            "points": 2,
+            "medalPts": 0
+          },
+          {
+            "school": "Brandeis University",
+            "points": 1,
+            "medalPts": 0
+          },
+          {
+            "school": "Northeastern University",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Lowell",
+            "points": 0,
+            "medalPts": 0
+          }
+        ],
+        "women": [
+          {
+            "school": "Boston University",
+            "points": 14,
+            "medalPts": 3
+          },
+          {
+            "school": "Columbia University",
+            "points": 12,
+            "medalPts": 3
+          },
+          {
+            "school": "Brown GAMMA",
+            "points": 8,
+            "medalPts": 2
+          },
+          {
+            "school": "UMass Lowell",
+            "points": 8,
+            "medalPts": 2
+          },
+          {
+            "school": "Northeastern University",
+            "points": 2,
+            "medalPts": 1
+          },
+          {
+            "school": "Brandeis University",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "Harvard Combat Club",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Amherst",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Boston",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "UMass Dartmouth",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "University of Pennsylvania",
+            "points": 0,
+            "medalPts": 0
+          },
+          {
+            "school": "Yale University",
+            "points": 0,
+            "medalPts": 0
+          }
+        ]
       }
     }
   ]
