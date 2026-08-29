@@ -1,11 +1,14 @@
 /**
  * CJL season snapshot
- * Reads current standings from the website's database (read-only, public anon
- * key) and appends them as a new season in rankings.json.
+ * Reads current standings from the website's public /api/standings endpoint
+ * and appends them as a new season in rankings.json. No database keys needed.
  *
- * Schema: men's and women's standings are separate tables with identical
- * columns. "Combined" is computed here by summing points and medal points per
- * school across both tables - the same way the website computes it.
+ * Expected endpoint response:
+ *   { "men": [ { school_name, points, medal_pts }, ... ],
+ *     "women": [ ... ] }
+ * (Also accepts "school"/"medalPts" key spellings, and an optional
+ * "combined" array; if absent, combined is computed by summing points and
+ * medal points per school across men + women, matching the website's logic.)
  *
  * Run by .github/workflows/season-snapshot.yml. Can also be run locally:
  *   node scripts/snapshot.js
@@ -40,39 +43,22 @@ function autoLabel(now) {
   return (now.getUTCMonth() < 6 ? "Spring " : "Fall ") + year;
 }
 
+function normalizeRow(r) {
+  return {
+    school: String(r.school_name ?? r.school ?? "").trim(),
+    points: Number(r.points) || 0,
+    medalPts: Number(r.medal_pts ?? r.medalPts ?? r.medal_points) || 0
+  };
+}
+
+function normalizeList(list) {
+  if (!Array.isArray(list)) return [];
+  return sortStandings(list.map(normalizeRow).filter((r) => r.school.length > 0));
+}
+
 function sortStandings(rows) {
   return rows.sort((a, b) =>
     (b.points - a.points) || (b.medalPts - a.medalPts) || a.school.localeCompare(b.school)
-  );
-}
-
-async function fetchTable(cfg, table) {
-  const cols = [cfg.columns.school, cfg.columns.points, cfg.columns.medalPts];
-  const url = cfg.supabaseUrl.replace(/\/$/, "") + "/rest/v1/" + encodeURIComponent(table) +
-    "?select=" + encodeURIComponent(cols.join(","));
-
-  const res = await fetch(url, {
-    headers: {
-      apikey: cfg.supabaseAnonKey,
-      Authorization: "Bearer " + cfg.supabaseAnonKey
-    }
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    fail("Request for table \"" + table + "\" failed (HTTP " + res.status + ").\nURL: " + url +
-      "\nResponse: " + body.slice(0, 500) +
-      "\nCheck the table and column names in snapshot.config.json.");
-  }
-  const rows = await res.json();
-
-  return sortStandings(
-    rows
-      .map((r) => ({
-        school: String(r[cfg.columns.school] ?? "").trim(),
-        points: Number(r[cfg.columns.points]) || 0,
-        medalPts: Number(r[cfg.columns.medalPts]) || 0
-      }))
-      .filter((r) => r.school.length > 0)
   );
 }
 
@@ -86,26 +72,19 @@ function computeCombined(men, women) {
       existing.points += row.points;
       existing.medalPts += row.medalPts;
     } else {
-      bySchool.set(row.school, { school: row.school, points: row.points, medalPts: row.medalPts });
+      bySchool.set(row.school, { ...row });
     }
   }
   return sortStandings(Array.from(bySchool.values()));
 }
 
 (async function main() {
-  // --- Load and validate config ---
+  // --- Load config ---
   if (!fs.existsSync(CONFIG_PATH)) fail("snapshot.config.json not found at repo root.");
   const cfg = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-
-  const unset = [];
-  if (!cfg.supabaseUrl || /REPLACE-ME/.test(cfg.supabaseUrl)) unset.push("supabaseUrl");
-  if (!cfg.supabaseAnonKey || /REPLACE-ME/.test(cfg.supabaseAnonKey)) unset.push("supabaseAnonKey");
-  if (!cfg.tables || !cfg.tables.men) unset.push("tables.men");
-  if (!cfg.tables || !cfg.tables.women) unset.push("tables.women");
-  ["school", "points", "medalPts"].forEach((k) => {
-    if (!cfg.columns || !cfg.columns[k]) unset.push("columns." + k);
-  });
-  if (unset.length) fail("Fill in these values in snapshot.config.json first: " + unset.join(", "));
+  if (!cfg.standingsEndpoint || !/^https?:\/\//.test(cfg.standingsEndpoint)) {
+    fail("Set standingsEndpoint in snapshot.config.json to the website's standings API URL.");
+  }
 
   // --- Work out the season name ---
   const label = (process.env.SEASON_LABEL || "").trim() || autoLabel(new Date());
@@ -123,15 +102,31 @@ function computeCombined(men, women) {
     return;
   }
 
-  // --- Fetch both division tables, compute combined ---
-  const men = await fetchTable(cfg, cfg.tables.men);
-  const women = await fetchTable(cfg, cfg.tables.women);
-  const combined = computeCombined(men, women);
+  // --- Fetch standings from the website ---
+  const res = await fetch(cfg.standingsEndpoint, {
+    headers: { Accept: "application/json" }
+  }).catch((e) => fail("Couldn't reach " + cfg.standingsEndpoint + " (" + (e.cause?.code || e.message) + ")."));
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    fail("The standings endpoint returned HTTP " + res.status + ".\nURL: " + cfg.standingsEndpoint +
+      "\nResponse: " + body.slice(0, 500) +
+      "\nIf the site's API route changed, update standingsEndpoint in snapshot.config.json.");
+  }
+  let payload;
+  try {
+    payload = await res.json();
+  } catch (e) {
+    fail("The standings endpoint didn't return valid JSON. Check " + cfg.standingsEndpoint + " in a browser.");
+  }
+
+  const men = normalizeList(payload.men);
+  const women = normalizeList(payload.women);
+  const combined = payload.combined ? normalizeList(payload.combined) : computeCombined(men, women);
 
   if (!combined.length) {
-    fail("Both standings tables came back empty, so no season was created. " +
-      "This protects the archive from snapshotting an empty database. " +
-      "Check the table/column names, or that the site has standings data right now.");
+    fail("The endpoint returned no standings rows, so no season was created. " +
+      "This protects the archive from snapshotting empty data. " +
+      "Open " + cfg.standingsEndpoint + " in a browser to see what it returns.");
   }
 
   // --- Append and save ---
