@@ -18,8 +18,130 @@
           { "school": "University of Pennsylvania", "points": 2, "medalPts": 0 },
           { "school": "Brandeis University", "points": 1, "medalPts": 0 }
         ],
-        "men": [],
-        "women": []
+        "men": [
+    {
+      "school_name": "Columbia University",
+      "points": 33,
+      "medal_pts": 3
+    },
+    {
+      "school_name": "Harvard Combat Club",
+      "points": 31,
+      "medal_pts": 2
+    },
+    {
+      "school_name": "UMass Amherst",
+      "points": 30,
+      "medal_pts": 3
+    },
+    {
+      "school_name": "Boston University",
+      "points": 20,
+      "medal_pts": 1
+    },
+    {
+      "school_name": "Yale University",
+      "points": 18,
+      "medal_pts": 1
+    },
+    {
+      "school_name": "Brown GAMMA",
+      "points": 18,
+      "medal_pts": 2
+    },
+    {
+      "school_name": "UMass Boston",
+      "points": 17,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "UMass Dartmouth",
+      "points": 2,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "University of Pennsylvania",
+      "points": 2,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "Brandeis University",
+      "points": 1,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "UMass Lowell",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "Northeastern University",
+      "points": 0,
+      "medal_pts": 0
+    }
+  ],
+        "women": [
+    {
+      "school_name": "Boston University",
+      "points": 14,
+      "medal_pts": 3
+    },
+    {
+      "school_name": "Columbia University",
+      "points": 12,
+      "medal_pts": 3
+    },
+    {
+      "school_name": "Brown GAMMA",
+      "points": 8,
+      "medal_pts": 2
+    },
+    {
+      "school_name": "UMass Lowell",
+      "points": 8,
+      "medal_pts": 2
+    },
+    {
+      "school_name": "Northeastern University",
+      "points": 2,
+      "medal_pts": 1
+    },
+    {
+      "school_name": "Yale University",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "UMass Amherst",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "Harvard Combat Club",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "UMass Boston",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "UMass Dartmouth",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "Brandeis University",
+      "points": 0,
+      "medal_pts": 0
+    },
+    {
+      "school_name": "University of Pennsylvania",
+      "points": 0,
+      "medal_pts": 0
+    }
+  ]
       }
     }
   ]
