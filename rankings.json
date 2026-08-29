@@ -1,8 +1,8 @@
 {
   "seasons": [
     {
-      "id": "spring-2026",
-      "label": "Spring 2026",
+      "id": "Test",
+      "label": "Test",
       "divisions": {
         "combined": [
           { "school": "Columbia University", "points": 45, "medalPts": 6 },
